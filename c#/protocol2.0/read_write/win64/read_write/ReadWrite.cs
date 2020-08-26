@@ -26,6 +26,10 @@
 // Be sure that Dynamixel PRO properties are already set as %% ID : 1 / Baudnum : 1 (Baudrate : 57600)
 //
 
+//my Dynamixel is 2XL430-W250-T.
+//so I can change parameters.
+//https://emanual.robotis.com/docs/kr/dxl/x/2xl430-w250/#%EC%BB%A8%ED%8A%B8%EB%A1%A4-%ED%85%8C%EC%9D%B4%EB%B8%94-%EC%84%A4%EB%AA%85
+// 2XL430-W250-T = MYXL
 using System;
 using System.Runtime.InteropServices;
 using dynamixel_sdk;
@@ -35,9 +39,9 @@ namespace read_write
   class ReadWrite
   {
     // Control table address
-    public const int ADDR_PRO_TORQUE_ENABLE          = 562;                 // Control table address is different in Dynamixel model
-    public const int ADDR_PRO_GOAL_POSITION          = 596;
-    public const int ADDR_PRO_PRESENT_POSITION       = 611;
+    public const int ADDR_MYXL_TORQUE_ENABLE          = 64;                 // Control table address is different in Dynamixel model
+    public const int ADDR_MYXL_GOAL_POSITION          = 116;
+    public const int ADDR_MYXL_PRESENT_POSITION       = 132;
 
     // Protocol version
     public const int PROTOCOL_VERSION                = 2;                   // See which protocol version is used in the Dynamixel
@@ -50,9 +54,9 @@ namespace read_write
 
     public const int TORQUE_ENABLE                   = 1;                   // Value for enabling the torque
     public const int TORQUE_DISABLE                  = 0;                   // Value for disabling the torque
-    public const int DXL_MINIMUM_POSITION_VALUE      = -150000;             // Dynamixel will rotate between this value
-    public const int DXL_MAXIMUM_POSITION_VALUE      = 150000;              // and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
-    public const int DXL_MOVING_STATUS_THRESHOLD     = 20;                  // Dynamixel moving status threshold
+    public const int DXL_MINIMUM_POSITION_VALUE      = 48;             // Dynamixel will rotate between this value
+    public const int DXL_MAXIMUM_POSITION_VALUE      = 52;              // and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
+    public const int DXL_MOVING_STATUS_THRESHOLD     = 24;                  // Dynamixel moving status threshold
 
     public const byte ESC_ASCII_VALUE                = 0x1b;
 
@@ -103,7 +107,7 @@ namespace read_write
       }
 
       // Enable Dynamixel Torque
-      dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
+      dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_MYXL_TORQUE_ENABLE, TORQUE_ENABLE);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
       {
         Console.WriteLine(Marshal.PtrToStringAnsi(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result)));
@@ -124,7 +128,7 @@ namespace read_write
           break;
 
         // Write goal position
-        dynamixel.write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_GOAL_POSITION, (UInt32)dxl_goal_position[index]);
+        dynamixel.write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_MYXL_GOAL_POSITION, (UInt32)dxl_goal_position[index]);
         if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
         {
           Console.WriteLine(Marshal.PtrToStringAnsi(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result)));
@@ -137,7 +141,7 @@ namespace read_write
         do
         {
           // Read present position
-          dxl_present_position = (Int32)dynamixel.read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_PRESENT_POSITION);
+          dxl_present_position = (Int32)dynamixel.read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_MYXL_PRESENT_POSITION);
           if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
           {
             Console.WriteLine(Marshal.PtrToStringAnsi(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result)));
@@ -163,7 +167,7 @@ namespace read_write
       }
 
       // Disable Dynamixel Torque
-      dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
+      dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_MYXL_TORQUE_ENABLE, TORQUE_DISABLE);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
       {
         Console.WriteLine(Marshal.PtrToStringAnsi(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result)));
